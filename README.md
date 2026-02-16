@@ -1,6 +1,6 @@
 # Dig‑N‑Around RC Construction Timer
 
-This repository contains the complete static HTML/CSS website for **Dig‑N‑Around RC Construction**, showcasing professional RC excavation experiences for events, parties, and demonstrations.
+This repository contains the complete static HTML/CSS time tracker for **Dig‑N‑Around RC Construction**, showcasing professional RC excavation experiences for events, parties, and demonstrations.
 
 ## 🧱 Project Structure
 
