@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dig‑N‑Around RC Construction Timer Tracker</title>
+  <style>
+    body {
+      font-family: "Roboto", Arial, sans-serif;
+      background: #2c2c2c;
+      color: #fff;
+      text-align: center;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #ffcc00;
+      text-shadow: 2px 2px 4px #000;
+      margin-bottom: 30px;
+      font-size: 2em;
+      letter-spacing: 1px;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .operator {
+      background: #3a3a3a;
+      border: 3px solid #ffcc00;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    /* caution stripe top */
+    .operator::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 10px;
+      background: repeating-linear-gradient(
+        45deg,
+        #ffcc00,
+        #ffcc00 10px,
+        #000 10px,
+        #000 20px
+      );
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+    }
+
+    .label {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 15px 0 10px;
+      transition: color 0.3s ease;
+    }
+
+    .label.out-of-time {
+      color: #ff4444;
+    }
+
+    .label[contenteditable="true"]:focus {
+      outline: 2px dashed #ffcc00;
+      background: #444;
+      border-radius: 4px;
+      padding: 2px 4px;
+    }
+
+    .timer {
+      font-size: 30px;
+      font-weight: bold;
+      color: #ffcc00;
+      margin-bottom: 10px;
+      text-shadow: 1px 1px 3px #000;
+    }
+
+    .controls button {
+      margin: 4px;
+      padding: 6px 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      color: #fff;
+      transition: 0.3s;
+      font-weight: 600;
+    }
+
+    .start {
+      background-color: #28a745;
+    }
+
+    .stop {
+      background-color: #dc3545;
+    }
+
+    .reset {
+      background-color: #6c757d;
+    }
+
+    .controls button:hover {
+      transform: translateY(-1px);
+      opacity: 0.9;
+    }
+
+    footer {
+      margin-top: 40px;
+      color: #999;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Dig‑N‑Around RC Construction</h1>
+
+  <div class="container" id="operatorContainer"></div>
+
+  <footer>Stay safe & keep digging!</footer>
+
+  <script>
+    const operatorContainer = document.getElementById('operatorContainer');
+    const operatorCount = 10;
+    const startTime = 5 * 60; // 5 minutes (seconds)
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return `${m}:${s.toString().padStart(2, "0")}`;
+    }
+
+    // Create timers
+    for (let i = 1; i <= operatorCount; i++) {
+      const div = document.createElement('div');
+      div.classList.add('operator');
+
+      // editable operator label
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.textContent = `Operator ${i}`;
+      label.contentEditable = true;
+      label.setAttribute('spellcheck', false);
+
+      // timer display
+      const timer = document.createElement('div');
+      timer.classList.add('timer');
+      timer.textContent = formatTime(startTime);
+
+      // button controls
+      const controls = document.createElement('div');
+      controls.classList.add('controls');
+      const startBtn = document.createElement('button');
+      const stopBtn = document.createElement('button');
+      const resetBtn = document.createElement('button');
+      startBtn.textContent = "Start";
+      stopBtn.textContent = "Stop";
+      resetBtn.textContent = "Reset";
+      startBtn.classList.add('start');
+      stopBtn.classList.add('stop');
+      resetBtn.classList.add('reset');
+
+      controls.appendChild(startBtn);
+      controls.appendChild(stopBtn);
+      controls.appendChild(resetBtn);
+
+      div.appendChild(label);
+      div.appendChild(timer);
+      div.appendChild(controls);
+      operatorContainer.appendChild(div);
+
+      // timer logic
+      let timeLeft = startTime;
+      let interval = null;
+
+      function startTimer() {
+        if (interval) return; // avoids duplicate intervals
+        interval = setInterval(() => {
+          if (timeLeft > 0) {
+            timeLeft--;
+            timer.textContent = formatTime(timeLeft);
+          } else {
+            clearInterval(interval);
+            interval = null;
+            label.classList.add('out-of-time');
+          }
+        }, 1000);
+      }
+
+      function stopTimer() {
+        clearInterval(interval);
+        interval = null;
+      }
+
+      function resetTimer() {
+        stopTimer();
+        timeLeft = startTime;
+        timer.textContent = formatTime(timeLeft);
+        label.classList.remove('out-of-time');
+      }
+
+      startBtn.addEventListener('click', startTimer);
+      stopBtn.addEventListener('click', stopTimer);
+      resetBtn.addEventListener('click', resetTimer);
+    }
+  </script>
+
+</body>
+</html>
