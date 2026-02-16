@@ -4,7 +4,7 @@ This repository contains the complete static HTML/CSS website for **Dig‑N‑Ar
 
 ## 🧱 Project Structure
 
-- `Timer` – Home page  
+- `index` – Home page  
 
 ## 🛠️ Setup Instructions
 
